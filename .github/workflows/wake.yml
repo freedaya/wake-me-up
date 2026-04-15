@@ -1,0 +1,28 @@
+name: Wake Streamlit Apps
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # Runs every 6 hours
+  workflow_dispatch:         # Allows manual triggering for testing
+
+jobs:
+  wake-apps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run wake script
+        env:
+          STREAMLIT_URLS: ${{ secrets.STREAMLIT_URLS }}
+        run: python main.py
